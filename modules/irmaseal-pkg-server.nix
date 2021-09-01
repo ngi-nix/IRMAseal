@@ -69,22 +69,18 @@ in
 
     environment.systemPackages = [ cfg.package ];
 
-    systemd.services.update-locatedb = {
+    systemd.services.irmaseal-pkg = {
       description = "IRMAseal PKG HTTP server";
       wantedBy = [ "multi-user.target" ];
-      serviceConfig =
-        {
-          ExecStart = ''
-            ${cfg.package}/bin/iramseal-pkg server \
-              --host '${cfg.host}' \
-              --irma '${cfg.irma}' \
-              --port ${toString cfg.port} \
-              --public '${cfg.publicKeyPath}' \
-              --secret '${cfg.secretKeyPath}'
-          '';
-
-          Restart = "always";
-        };
+      serviceConfig.Restart = "always";
+      script = ''
+        ${cfg.package}/bin/iramseal-pkg server \
+          --host '${cfg.host}' \
+          --irma '${cfg.irma}' \
+          --port ${toString cfg.port} \
+          --public '${cfg.publicKeyPath}' \
+          --secret '${cfg.secretKeyPath}'
+      '';
     };
 
   };
