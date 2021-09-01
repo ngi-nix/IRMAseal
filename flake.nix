@@ -45,7 +45,10 @@
 
       };
 
-      nixosModule = import ./modules/irmaseal-pkg-server.nix;
+      nixosModules.irmaseal-pkg = {
+        imports = [ ./modules/irmaseal-pkg-server.nix ];
+        nixpkgs.overlays = [ self.overlay ];
+      };
 
       packages = forAllSystems (system: {
         inherit (nixpkgsFor.${system})
@@ -55,7 +58,7 @@
 
 
       defaultPackage =
-        forAllSystems (system: self.packages.${system}.shadysim-bin);
+        forAllSystems (system: self.packages.${system}.irmaseal-cli);
 
     };
 
