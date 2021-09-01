@@ -74,7 +74,7 @@ in
       wantedBy = [ "multi-user.target" ];
       serviceConfig.Restart = "always";
       script = ''
-        ${cfg.package}/bin/iramseal-pkg server \
+        ${cfg.package}/bin/irmaseal-pkg server \
           --host '${cfg.host}' \
           --irma '${cfg.irma}' \
           --port ${toString cfg.port} \
