@@ -49,7 +49,7 @@ in
 
     publicKeyPath = mkOption {
       type = types.path;
-      default = "./pkg.pub";
+      default = ./pkg.pub;
       description = ''
         Path to the public key
       '';
@@ -57,7 +57,7 @@ in
 
     secretKeyPath = mkOption {
       type = types.path;
-      default = "./pkg.sec";
+      default = ./pkg.sec;
       description = ''
         Path to the private key
       '';
