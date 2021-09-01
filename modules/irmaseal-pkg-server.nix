@@ -56,7 +56,7 @@ in
     };
 
     secretKeyPath = mkOption {
-      type = types.port;
+      type = types.path;
       default = "./pkg.sec";
       description = ''
         Path to the private key
