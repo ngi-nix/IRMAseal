@@ -14,6 +14,6 @@ rustPlatform.buildRustPackage {
 
   src = "${irmaseal-src}/irmaseal-pkg";
 
-  cargoSha256 = "1CF584nmqre6IpcEWENshUgRz8hxgK+GjrNuU7XHUTY=";
+  cargoSha256 = "y+fL4ERkEcuIAgNBFHNrWBBwoZ4VfGpqpHFqEJDymkg=";
 
 }
