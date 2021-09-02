@@ -1,0 +1,44 @@
+{
+  "nodes": {
+    "irmaseal-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1627548173,
+        "narHash": "sha256-wvdoFxcAQIgNMvap+fGHAs6caphj+LbTVUCdE5/gbZs=",
+        "owner": "Wassasin",
+        "repo": "irmaseal",
+        "rev": "3aaec4e4018d356850b0469df6aeb5765f3756df",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Wassasin",
+        "repo": "irmaseal",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1630424636,
+        "narHash": "sha256-TKzxyJ1r5zflL0yewsA3tHq/2A64eNm5hkgO/nhwbFg=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "4b7e51865e44d3afc564e3a3111af12be1003251",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-21.05",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "irmaseal-src": "irmaseal-src",
+        "nixpkgs": "nixpkgs"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}
