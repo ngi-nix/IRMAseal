@@ -24,7 +24,7 @@ in
 
     host = mkOption {
       type = types.str;
-      default = "0.0.0.0";
+      default = "127.0.0.1";
       description = ''
         Host to bind this service to
       '';
@@ -71,15 +71,19 @@ in
     systemd.services.irmaseal-pkg = {
       description = "IRMAseal PKG HTTP server";
       wantedBy = [ "multi-user.target" ];
-      serviceConfig.Restart = "always";
-      script = ''
-        ${cfg.package}/bin/irmaseal-pkg server \
-          --host '${cfg.host}' \
-          --irma '${cfg.irma}' \
-          --port ${toString cfg.port} \
-          --public '${cfg.publicKeyPath}' \
-          --secret '${cfg.secretKeyPath}'
-      '';
+      serviceConfig = {
+        ExecStart = ''
+          ${cfg.package}/bin/irmaseal-pkg server \
+            --host '${cfg.host}' \
+            --irma '${cfg.irma}' \
+            --port ${toString cfg.port} \
+            --public '${cfg.publicKeyPath}' \
+            --secret '${cfg.secretKeyPath}'
+        '';
+        Restart = "always";
+        DynamicUser = true;
+        PrivateTmp = true;
+      };
     };
 
   };
