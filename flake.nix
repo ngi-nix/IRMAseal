@@ -1,5 +1,5 @@
 {
-  description = "Shadysim";
+  description = "IRMAseal - identity based encryption service";
 
   inputs = {
 

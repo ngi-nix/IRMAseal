@@ -9,11 +9,6 @@ in
 rustPlatform.buildRustPackage {
   pname = "irmaseal-cli";
   inherit version;
-
-  buildInputs = [ ];
-
   src = "${irmaseal-src}/irmaseal-cli";
-
   cargoSha256 = "ieIxRUDgZ9Lyg5pNtIO/2zXYS+GfwWRZ5ARiSbk9X8E=";
-
 }

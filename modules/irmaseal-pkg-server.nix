@@ -12,15 +12,14 @@ in
       type = types.bool;
       default = false;
       description = ''
-        If enabled, NixOS will periodically update the database of
-        files used by the locate command.
+        This option enables the IRMAseal-PKG server.
       '';
     };
 
     package = mkOption {
       type = types.path;
       default = pkgs.irmaseal-pkg;
-      description = "The IRMAseal PKG package to use";
+      description = "The IRMAseal-PKG package to use";
     };
 
     host = mkOption {
