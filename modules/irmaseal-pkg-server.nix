@@ -83,6 +83,7 @@ in
         Restart = "always";
         DynamicUser = true;
         PrivateTmp = true;
+        ReadOnlyPaths = "${cfg.publicKeyPath} ${cfg.secretKeyPath}";
       };
     };
 
