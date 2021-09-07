@@ -10,6 +10,8 @@
       flake = false;
     };
 
+    nixos-shell.url = "github:mic92/nixos-shell";
+
   };
 
 
@@ -17,6 +19,7 @@
     { self
     , nixpkgs
     , irmaseal-src
+    , nixos-shell
     , ...
     }:
     let
@@ -56,9 +59,53 @@
           irmaseal-pkg;
       });
 
+      apps = forAllSystems (system: {
+        generate-keys = {
+          type = "app";
+          program = builtins.toString (nixpkgsFor."${system}".writeScript "generate-keys" ''
+            ${self.packages."${system}".irmaseal-pkg}/bin/irmaseal-pkg generate "$@"
+          '');
+        };
+
+        nixos-shell = {
+          type = "app";
+          program = builtins.toString (nixpkgs.legacyPackages."${system}".writeScript "nixos-shell" ''
+            ${nixos-shell.defaultPackage."${system}"}/bin/nixos-shell \
+              -I nixpkgs=${nixpkgs} \
+              ./modules/test-module.nix
+          '');
+        };
+      });
+
 
       defaultPackage =
-        forAllSystems (system: self.packages.${system}.irmaseal-cli);
+        forAllSystems (system: self.packages."${system}".irmaseal-pkg);
+
+
+      checks = forAllSystems (system: {
+        inherit (self.packages.${system}) irmaseal-pkg;
+
+        # A VM test of the NixOS module.
+        vmTest =
+          with import (nixpkgs + "/nixos/lib/testing-python.nix") {
+            inherit system;
+          };
+
+          makeTest {
+            nodes = {
+              client = { ... }: {
+                imports = [ self.nixosModules.irmaseal-pkg ];
+                services.irmaseal-pkg.enable = true;
+              };
+            };
+
+            testScript =
+              ''
+                start_all()
+                client.wait_for_open_port("8087")
+              '';
+          };
+      });
 
     };
 
