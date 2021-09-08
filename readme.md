@@ -13,9 +13,9 @@ operations, including IRMA attribute disclosure proofs. This
 flake provides `irmaseal-cli` as a package:
 
 ```
-nix build github:ngi-nix/irmaseal#irmaseal-cli
+$ nix build github:ngi-nix/irmaseal#irmaseal-cli
 
-./result/bin/irmaseal-cli -h
+$ ./result/bin/irmaseal-cli -h
 irmaseal-cli 0.1
 Wouter Geraedts <w.geraedts@sarif.nl>
 Command line interface for IRMAseal, an Identity Based Encryption standard.
@@ -40,11 +40,13 @@ receives attribute disclosure proofs and yields the
 corresponding user secret key. This flake provides
 IRMAseal-pkg as a package as well as a module. 
 
+#### Usage as standalone package
+
 To use IRMAseal-pkg as a standalone package:
 ```
-nix build github:ngi-nix/irmaseal#irmaseal-pkg
+$ nix build github:ngi-nix/irmaseal#irmaseal-pkg
 
-./result/bin/irmaseal-pkg -h
+$ ./result/bin/irmaseal-pkg -h
 irmaseal-pkg 0.1
 Wouter Geraedts <w.geraedts@sarif.nl>
 Private Key Generator (PKG) for IRMAseal, an Identity Based Encryption standard.
@@ -62,15 +64,43 @@ SUBCOMMANDS:
     server      run the IRMAseal PKG HTTP server
 
 # the standalone package can be used to generate keys
-./result/bin/irmaseal-pkg generate
+$ ./result/bin/irmaseal-pkg generate
 Written ./pkg.pub and ./pkg.sec
 
 # it can also be used to run the HTTP service
-./result/bin/irmaseal-pkg server
+$ ./result/bin/irmaseal-pkg server
 ```
 
-To use IRMAseal-pkg as a module, first generate keys with
-`irmaseal-pkg generate`, and then enable the NixOS module:
+#### Usage as a module
+
+To use IRMAseal-pkg as a module:
+
+##### 1. (Optional) Generate keys 
+
+The keys can be generated in one of two ways:
+
+```
+# get the package and run `irmaseal-pkg generate`
+$ nix build github:ngi-nix/irmaseal#irmaseal-pkg
+$ ./result/bin/irmaseal-pkg generate
+Written ./pkg.pub and ./pkg.sec
+
+# use the flake app!
+$ nix run github:ngi-nix/irmaseal#generate-keys
+Written ./pkg.pub and ./pkg.sec
+```
+
+##### 2. Enable the module
+
+When enabling the module, pass the path to your generated
+keys to the `keyDir` option. 
+
+If this option is not provided, the keys are automatically
+generated and placed in `/var/lib/irmaseal-pkg`.
+
+If this option is provided and the keys are not present at
+the directory, they are generated and placed in the same
+directory.
 
 ```
 # in /etc/nixos/configuration.nix
@@ -81,10 +111,15 @@ To use IRMAseal-pkg as a module, first generate keys with
   
   services.irmaseal-pkg = {
     enable = true;
-    
-    # these are keys generated via `irmaseal-pkg generate`
-    publicKeyPath = /path/to/pkg.pub;
-    secretKeyPath = /path/to/pkg.sec;
+
+    # Path to the directory containing both private and
+    # public key.
+    #
+    # If the keys are not present, they are generated on
+    # the first run.
+    keyDir = /path/to/your/keys;
+
+    # see module for entire list of options
   };
 
 }
