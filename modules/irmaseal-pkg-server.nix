@@ -46,19 +46,14 @@ in
       '';
     };
 
-    publicKeyPath = mkOption {
-      type = types.path;
-      default = ./pkg.pub;
+    keyDir = mkOption {
+      type = types.nullOr types.path;
+      default = null;
       description = ''
-        Path to the public key
-      '';
-    };
-
-    secretKeyPath = mkOption {
-      type = types.path;
-      default = ./pkg.sec;
-      description = ''
-        Path to the private key
+        Path to the directory containing private + public key.
+        If keys $keyDir/pkg.pub and $keyDir/pkg.sec do not exist,
+        they are generated on first start.
+        Generate keys by executing: `nix run .#generate-keys`
       '';
     };
 
@@ -71,19 +66,28 @@ in
     systemd.services.irmaseal-pkg = {
       description = "IRMAseal PKG HTTP server";
       wantedBy = [ "multi-user.target" ];
+      preStart = lib.optionalString (cfg.keyDir == null) ''
+        ${pkgs.irmaseal-pkg}/bin/irmaseal-pkg generate \
+          -P "/var/lib/irmaseal-pkg/pkg.pub" \
+          -S "/var/lib/irmaseal-pkg/pkg.sec"
+      '';
       serviceConfig = {
-        ExecStart = ''
+        ExecStart = 
+        let 
+          keyDir = if (cfg.keyDir == null) then "/var/lib/irmaseal-pkg" else cfg.keyDir;
+        in ''
           ${cfg.package}/bin/irmaseal-pkg server \
             --host '${cfg.host}' \
             --irma '${cfg.irma}' \
             --port ${toString cfg.port} \
-            --public '${cfg.publicKeyPath}' \
-            --secret '${cfg.secretKeyPath}'
+            --public "${keyDir}/pkg.pub" \
+            --secret "${keyDir}/pkg.sec"
         '';
         Restart = "always";
         DynamicUser = true;
         PrivateTmp = true;
-        ReadOnlyPaths = "${cfg.publicKeyPath} ${cfg.secretKeyPath}";
+        StateDirectory = "irmaseal-pkg";
+        ReadOnlyPaths = mkIf (cfg.keyDir != null) "${cfg.keyDir}";
       };
     };
 
