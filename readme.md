@@ -6,6 +6,12 @@ Included are:
  - `irmaseal-cli`
  - `irmaseal-pkg`
 
+If you are unfamiliar with Nix Flakes, consider looking
+through the following:
+
+ - [NixOS Wiki on Flakes](https://nixos.wiki/wiki/Flakes)
+ - [Introduction to Flakes by Eelco Dolstra](https://www.tweag.io/blog/2020-05-25-flakes/)
+
 ### IRMAseal-cli
 
 Command-line application that serves all IRMAseal
